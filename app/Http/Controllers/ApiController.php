@@ -23,9 +23,10 @@ class ApiController extends Controller
         $movie->status = $request->status;
         $movie->save();
 
+        // return response('Success', 200);
         return response()->json([
             "message" => "Movie created"
-        ], 201);
+        ], 200);
     }
 
     public function getMovieByStatus($status){
@@ -69,7 +70,7 @@ class ApiController extends Controller
 
             return response()->json([
                 "message" => "Movie deleted"
-            ], 202);
+            ], 200);
         }else{
             return response()->json([
                 "message" => "Movie not found"
