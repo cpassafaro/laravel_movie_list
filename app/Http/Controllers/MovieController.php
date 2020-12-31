@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Movie;
 
 class MovieController extends Controller
 {
@@ -13,7 +14,12 @@ class MovieController extends Controller
      */
     public function index()
     {
-        //get all movies
+        // $movies = Movie::orderBy('created_at', 'asc') ->paginate(10);
+        $active = Movie::where('status', 'Active')->orderBy('name', 'asc')->paginate(10);
+        $inactive = Movie::where('status', 'Inactive')->orderBy('name', 'asc')->paginate(10);
+
+        // $movies = Movie::all();
+        return view('posts.index')->with('active', $active)->with('inactive', $inactive);
     }
 
     /**
@@ -23,7 +29,7 @@ class MovieController extends Controller
      */
     public function create()
     {
-        //not gonna use because I'm not making input views
+        return view('posts.create');
     }
 
     /**
@@ -34,7 +40,22 @@ class MovieController extends Controller
      */
     public function store(Request $request)
     {
-        //store the created movie to the db
+        $this->validate($request, [
+            'name' => 'required',
+            'description' => 'required',
+            'length' => 'required',
+            'status' => 'required'
+        ]);
+
+        $movie = new Movie;
+        $movie ->name = $request->input('name');
+        $movie->description = $request->input('description');
+        $movie->length = $request->input('length');
+        $movie->status = $request->input('status');
+        $movie->save();
+
+        return redirect('/movies')->with('success', 'Movie Created');
+        
     }
 
     /**
@@ -45,7 +66,9 @@ class MovieController extends Controller
      */
     public function show($id)
     {
-        //
+        $movie = Movie::find($id);
+
+        return view('posts.show')->with('movie', $movie);
     }
 
     /**
@@ -56,7 +79,9 @@ class MovieController extends Controller
      */
     public function edit($id)
     {
-        //
+        $movie = Movie::find($id);
+
+        return view('posts.edit')->with('movie', $movie);
     }
 
     /**
@@ -68,7 +93,21 @@ class MovieController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required',
+            'description' => 'required',
+            'length' => 'required',
+            'status' => 'required'
+        ]);
+
+        $movie = Movie::find($id);
+        $movie ->name = $request->input('name');
+        $movie->description = $request->input('description');
+        $movie->length = $request->input('length');
+        $movie->status = $request->input('status');
+        $movie->save();
+
+        return redirect('/movies')->with('success', 'Movie Updated');
     }
 
     /**
@@ -79,6 +118,9 @@ class MovieController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $movie = Movie::find($id);
+
+        $movie->delete();
+        return redirect('/movies')->with('success', 'Post Removed');
     }
 }

@@ -14,7 +14,7 @@
 use App\Http\Controllers\ApiController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('pages.index');
 });
 
 // Route::get('movies', 'ApiController@getAllMovies');
@@ -26,4 +26,4 @@ Route::get('/', function () {
 
 
 //multiple routes for movie controller, run php artisan route:list  to see the routes
-// Route::resource('movies', 'MovieController');
+Route::resource('movies', 'MovieController');
